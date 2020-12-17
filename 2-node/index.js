@@ -15,24 +15,54 @@ function getUser(callback) {
   }, 1000)
 }
 
-function getTel(idUsuario) {
+function getTel(idUser, callback) {
   setTimeout(() => {
-    return {
-      tel: '31569524',
+    return callback(null, {
+      tel: '31569456',
       ddd: '21'
-    }
+    })
   }, 2000)
 }
 
-function getEnd(idUsuario) {
-
+function getEnd(idUser, callback) {
+  setTimeout(() => {
+    return callback(null, {
+      street: 'Av. Central',
+      number: 0
+    })
+  }, 2000)
 }
 
 function userResolve(error, user) {
   console.log('usuario', user)
 }
 
-getUser(userResolve) 
+getUser(function userResolve(error, user) {
+  // null || "" || 0 === false
+  if(error) {
+    console.error('Problema com o usuario', error)
+    return;
+  }
+
+  getTel(user.id, function telResolve(error1, tel) {
+    if(error1) {
+      console.error('Problema com o telefone', error)
+      return;
+    }
+    getEnd(user.id, function endResolve(error2, end) {
+      if(error2) {
+        console.error('Problema com o endereço', error)
+        return;
+      }
+      console.log(`
+        name: ${user.name},
+        end: ${end.street}, ${end.number}
+        tel: (${tel.ddd}) ${tel.tel}
+      `)
+    })
+  })
+}) 
+
 //const tel = getTel(usuario.id)
 
 //console.log('telefone', tel)
