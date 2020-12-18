@@ -46,39 +46,27 @@ function getEnd(idUser, callback) {
 
 }
 
-const userPromise = getUser() 
+main()
+async function main() {
+  try {
+    console.time('medida-promise')
+    const user = await getUser()
+    const result = await Promise.all([
+      getTel(user.id),
+      getEndAsync(user.id)
+    ])
+    const tel = result[0]
+    const end = result[1]
+    
 
-userPromise
-  .then(function (user) {
-    return getTel(user.id)
-      .then(function resolveTel(result) {
-        return {
-          usuario: {
-            name: user.name,
-            id: user.id
-          },
-          tel: result
-        }
-      })
-  })  
-  .then(function (resultado) {
-    const end = getEndAsync(resultado.id)
-    return end.then(function resolveEnd(result) {
-      return {
-        usuario: resultado.usuario,
-        telefone: resultado.tel,
-        endereco: result
-      }
-    })
-  })
-  .then(function (resultado) {
     console.log(`
-      Nome: ${resultado.usuario.name}
-      Endereco: ${resultado.endereco.street}, ${resultado.endereco.number}
-      Telefone: (${resultado.telefone.ddd}) ${resultado.telefone.tel}
-    `)
-  })
-  .catch(function (error) {
-    console.error('Error', error)
-  })
-
+       Nome: ${user.name}
+       Endereco: ${end.street}, ${end.number}
+       Telefone: (${tel.ddd}) ${tel.tel}
+     `)
+     console.timeEnd('medida-promise')
+  }
+  catch(error) {
+    console.error(error)
+  }
+}
