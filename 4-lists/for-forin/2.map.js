@@ -11,7 +11,7 @@ Array.prototype.myMap = function (callback) {
 
 }
 
-async function main() {
+const main = async () => {
   try {
     const results = await service.getPeople(`a`)
     //const names = []
