@@ -55,6 +55,26 @@ class Database {
     return await this.writeFile(data)
   }
 
+  async update(id, changes) {
+    const data = await this.getDataFile()
+    const index = data.findIndex(item => item.id === parseInt(id))
+    if(index === -1) {
+      throw Error('heroi informed user doest exist')
+    }
+    const current = data[index]
+    const objUpdate = {
+      ...current,
+      ...changes
+    }
+    data.splice(index, 1)
+
+    return await this.writeFile([
+      ...data,
+      objUpdate
+    ])
+
+  }
+
 }
 
 module.exports = new Database()
